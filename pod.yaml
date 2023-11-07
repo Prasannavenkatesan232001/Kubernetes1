@@ -51,3 +51,55 @@ kind: Namespace
 metadata:
       name: app-ns
       namespace: app
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+configmap.yaml
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+     name: spec-configmap
+data:
+    game.properties:
+            enemies=aliens
+            lives=3
+            cheatcode =testing
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Configmap Execution
+$ mkdir props
+$ cd props
+$ touch game.properties
+$ vim game.properties
+enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=noGoodRotten
+secret.code.paraphrase=UDDDDDD
+secret.code.allowed=true
+
+$ vim ui.properties
+color.good=purple
+color.bad=yellow
+color.textmode=true
+how.nice.to.look=fairy
+
+$ ls -lrt
+
+$kubectl create configmap myconfig --from-file=game.properties
+$ kubectl create configmap myconfig01 --from-file=.
+$ kubectl create configmap literal-config --from-literal=mykey=myval --from-literal=myName=Vinodh
+$ kubectl describe configmap myconfig
+# shows only game.properties
+$ kubectl describe configmap myconfig01
+# shows both ame.properties and ui,properties
+$ kubectl describe configmap literal-config
+# shows myname and myvalue
+$ kubectl get configmaps
+-----------------------------------------------------------------------------------------------------------
+Using in the conept of pod
+
+
+
+
+
+
+      
