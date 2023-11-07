@@ -1,0 +1,53 @@
+pod.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx1-pod
+  namespace: app-ns
+  labels:
+    env: prod-pod
+    type: frond-end
+    identifier: nginx-prod-pod
+spec:
+  containers:
+  - name: myapp
+    image: nginx
+    ports:
+      - containerPort: 80
+---------------------------------
+Deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+       name: nginx-deployment
+       labels:
+           app: nginx-app
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      type: front-end
+  template:
+    metadata:
+      name: nginx-pod
+      labels:
+        env: pod
+        type: front-end
+    spec:
+      containers:
+      - name: nginx-ctr
+        image: nginx
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 8080
+
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+namespace.yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+      name: app-ns
+      namespace: app
