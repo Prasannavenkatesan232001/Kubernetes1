@@ -7,4 +7,30 @@ ubuntu@worker01:~/security$ sudo chown 2000:3000 message.txt
 ubuntu@worker01:~/security$ sudo chmod 777 message.txt
 ubuntu@worker01:~/security$ pwd
 /home/ubuntu/security
-Security.yaml
+Sec1.yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busybox-ct2
+spec:
+  securityContext:
+    runAsUser: 2000
+    fsGroup: 3000
+  containers:
+    - name: busybox-ctr
+      image: busybox
+      command: ['sh', '-c', 'cat /security/message.txt && sleep 3600']
+      volumeMounts:
+        - name: config-volume
+          mountPath: /security
+  volumes:
+    - name: config-volume
+      hostPath:
+        path: /home/ubuntu/security
+
+
+ubuntu@worker01:~/security$ vim sec1.yaml
+ubuntu@worker01:~/security$ kubectl create -f sec1.yaml
+pod/busybox-ct2 created
+ubuntu@worker01:~/security$ kubectl logs busybox-ct2
+
