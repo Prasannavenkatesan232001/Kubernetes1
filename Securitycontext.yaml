@@ -1,0 +1,10 @@
+$ mkdir security
+$ cd security 
+ubuntu@worker01:~/security$ sudo useradd -u 2000 user1
+ubuntu@worker01:~/security$ sudo groupadd -g 3000 group1
+ubuntu@worker01:~/security$ echo " Hello Baby" >message.txt
+ubuntu@worker01:~/security$ sudo chown 2000:3000 message.txt
+ubuntu@worker01:~/security$ sudo chmod 777 message.txt
+ubuntu@worker01:~/security$ pwd
+/home/ubuntu/security
+Security.yaml
