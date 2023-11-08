@@ -97,6 +97,7 @@ $ kubectl describe configmap literal-config
 $ kubectl get configmaps
 -----------------------------------------------------------------------------------------------------------
 Using in the conept of pod
+$ kubectl create configmap literal-config --from-literal=mykey=myval --from-literal=myName=Vinodh
 
 pod.yaml
 apiVersion: v1
@@ -112,8 +113,8 @@ spec:
         - name: MYVAL
           valueFrom:
             configMapKeyRef:
-              name: literal-config1
-              key: myname
+              name: literal-config
+              key: myName
 
     $ kubectl logs mypod 
     # Vinodh
@@ -135,15 +136,13 @@ spec:
   volumes:
     - name: literal-volume
       configMap:
-        name: literal-config1
+        name: literal-config
 
 EXECUTION
 $ kubectl create -f mount.yaml
 ubuntu@worker01:~/props$ kubectl logs mypod1
 sh: MYVAL: not found
-ubuntu@worker01:~/props$ kubectl exec -it mypod1 --/bin/sh
-error: unknown flag: --/bin/sh
-See 'kubectl exec --help' for usage.
+u
 ubuntu@worker01:~/props$ kubectl exec -it mypod1 -- /bin/sh
 / # cd etc
 /etc # ls -ltr
