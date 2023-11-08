@@ -33,4 +33,105 @@ ubuntu@worker01:~/security$ vim sec1.yaml
 ubuntu@worker01:~/security$ kubectl create -f sec1.yaml
 pod/busybox-ct2 created
 ubuntu@worker01:~/security$ kubectl logs busybox-ct2
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Health Check 
+Liveness probe- setermines when to start a container
+live.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-deploy1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: lv-probe
+  template:
+    metadata:
+      labels:
+        app: lv-probe
+    spec:
+      containers:
+        - image: busybox
+          name: busybox-container
+          args:
+            - /bin/sh
+            - -c
+            - touch hello; sleep 25; rm -f hello; sleep 500
+          livenessProbe:
+            exec:
+              command:
+                - cat
+                - hello
+            initialDelaySeconds: 5
+            periodSeconds: 5
+
+code explaination
+selector: Specifies the label selector used to match the Pods that should be managed by this Deployment. In this case, it selects Pods with the label "app: lv-probe."
+args: Defines the command and arguments to run in the container.
+- /bin/sh -c touch hello; sleep 25; rm -f hello; sleep 500: This is a shell command that creates a file named "hello," sleeps for 25 seconds, removes the "hello" file, and then sleeps for 500 seconds.
+livenessProbe: Specifies a liveness probe for the container to check its health.
+
+exec: Defines an exec action for the probe.
+
+command: Specifies the command to run as a part of the probe. In this case, it runs "cat hello" to check if the "hello" file exists.
+initialDelaySeconds: 5: Sets the initial delay before the first probe is performed, which is 5 seconds.
+
+periodSeconds: 5: Specifies the time interval between probe checks, which is 5 seconds.
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Readiness Probe- decides a container in reasy to accept traffic
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: probe-deploy22
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rd-probe
+  template:
+    metadata:
+      labels:
+        app: rd-probe
+    spec:
+      containers:
+        - image: busybox
+          name: busybox-container
+          args:
+            - /bin/sh
+            - -c
+            - touch hello; sleep 60 ; rm -f hello; sleep 500
+          readinessProbe:
+            exec:
+              command:
+                - cat
+                - hello
+            initialDelaySeconds: 5
+            periodSeconds: 10  # Set an appropriate value for the period
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Services
+Cluster Ip - Internal load balancer
+nginx.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc
+spec:
+  selector:
+    app: nginx
+  ports:
+    - name: nginx-port
+      protocol: TCP
+      port: 32767
+      targetPort: 80
+      ubuntu@worker01:~$ kubectl create -f nginx.yaml
+service/nginx-svc created
+ubuntu@worker01:~$ kubectl get services
+NAME         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
+knote        LoadBalancer   10.105.166.65    <pending>     80:30000/TCP   4d1h
+kubernetes   ClusterIP      10.96.0.1        <none>        443/TCP        4d2h
+nginx-svc    ClusterIP      10.101.121.186   <none>        32767/TCP      10s
+
+
+
 
