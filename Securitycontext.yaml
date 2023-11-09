@@ -124,14 +124,47 @@ spec:
       protocol: TCP
       port: 32767
       targetPort: 80
-      ubuntu@worker01:~$ kubectl create -f nginx.yaml
+      
+ubuntu@worker01:~$ kubectl create -f nginx.yaml
 service/nginx-svc created
 ubuntu@worker01:~$ kubectl get services
 NAME         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)        AGE
 knote        LoadBalancer   10.105.166.65    <pending>     80:30000/TCP   4d1h
 kubernetes   ClusterIP      10.96.0.1        <none>        443/TCP        4d2h
 nginx-svc    ClusterIP      10.101.121.186   <none>        32767/TCP      10s
-
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment3
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx-ctr
+        image: nginx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-svc1
+  type: LoadBalancer
+spec:
+  selector:
+    app: nginx
+  ports:
+    - protocol: TCP
+      port: 32767
+      targetPort: 80
+      nodePort: 30000
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 
