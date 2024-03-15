@@ -17,17 +17,17 @@ spec:
 ---------------------------------
 Deployment.yaml
 apiVersion: apps/v1
-kind: Deployment
+kind: Deployment (#resources type)
 metadata:
-       name: nginx-deployment
+       name: nginx-deployment (# name of the resource )
        labels:
            app: nginx-app
-spec:
+spec:(# deployment specification)
   replicas: 3
   selector:
     matchLabels:
       type: front-end
-  template:
+  template:(# definition of pod)
     metadata:
       name: nginx-pod
       labels:
